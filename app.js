@@ -15,7 +15,16 @@ let server = http.createServer((request,response)=>{
     let targetPath = path.join(rootPath,request.url);//console.log(targetPath);
     //1,判断路径是否存在
     if(fs.existsSync(targetPath)){
-        
+        //2,判断是文件夹还是文件
+        fs.stat(targetPath,(err,stats)=>{//console.log(stats);
+            //这样使用,然后由stats点出方法
+            //如果是文件的话
+            if(stats.isFile(targetPath)){
+                fs.readFile(targetPath,(err,data)=>{
+                    response.end(data);
+                })
+            }
+        })
     }else{
         //转义
         response.setHeader('content-type','text/html;charset=utf-8');
@@ -31,7 +40,7 @@ let server = http.createServer((request,response)=>{
             </body></html>
             `)
     }
-    //2,判断是文件夹还是文件
+    
     //3,判断文件的后缀名,
     //4,跳转
 });
