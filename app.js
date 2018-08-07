@@ -24,6 +24,38 @@ let server = http.createServer((request,response)=>{
                     response.end(data);
                 })
             }
+            //如果是文件夹的话
+            if(stats.isDirectory()){
+                //定义一个字符串
+                let tem = '';
+                fs.readdir(targetPath,(err,files)=>{
+                    //遍历文件夹
+                   for(let i = 0;i<files.length;i++){
+                        tem+=`
+                            <li>
+                                <a href="${request.url}${request.url=='/'?'':'/'}${files[i]}">${files[i]}</a>
+                            </li>
+                            `
+                   }
+                   response.end(`
+                        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+                        <html>
+                        
+                        <head>
+                            <title>Index of/ </title>
+                        </head>
+                        
+                        <body>
+                            <h1>Index of ${request.url}</h1>
+                            <ul>
+                                ${tem}
+                            </ul>
+                        </body>
+                        
+                        </html>
+                   `)
+               })
+            }
         })
     }else{
         //转义
