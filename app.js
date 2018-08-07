@@ -1,10 +1,13 @@
 
+
 //引入要用的模板
 const fs = require('fs');
 
 const http = require('http');
 
 const path = require('path');
+
+const mime = require('mime');
 
 //获取要访问的地址(根目录)
 let rootPath = path.join(__dirname,'www');//console.log(rootPath);
@@ -13,11 +16,14 @@ let rootPath = path.join(__dirname,'www');//console.log(rootPath);
 let server = http.createServer((request,response)=>{
     //生成地址
     let targetPath = path.join(rootPath,request.url);//console.log(targetPath);
+
     //1,判断路径是否存在
     if(fs.existsSync(targetPath)){
         //2,判断是文件夹还是文件
         fs.stat(targetPath,(err,stats)=>{//console.log(stats);
             //这样使用,然后由stats点出方法
+            //使用mime来设置类型
+            response.setHeader('content-type',mime.getType(targetPath));
             //如果是文件的话
             if(stats.isFile(targetPath)){
                 fs.readFile(targetPath,(err,data)=>{
